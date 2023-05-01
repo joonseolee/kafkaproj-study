@@ -10,13 +10,13 @@ fun main(args: Array<String>) {
     val topicName = "simple-topic"
 
     val props = Properties()
-    props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:32181")
+    props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
     props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer::class.java.name)
     props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer::class.java.name)
 
     val kafkaProducer = KafkaProducer<String, String>(props)
 
-    val producerRecord = ProducerRecord<String, String>(topicName, "hello world")
+    val producerRecord = ProducerRecord<String, String>(topicName, "hello world!!!")
 
     kafkaProducer.send(producerRecord)
     kafkaProducer.flush()

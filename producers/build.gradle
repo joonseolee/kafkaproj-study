@@ -10,19 +10,20 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set("kotestVersion", "4.4.3")
+}
+
 dependencies {
-    // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
     implementation 'org.apache.kafka:kafka-clients:3.1.2'
 
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    /** log */
     implementation 'org.slf4j:slf4j-api:1.7.36'
-    // https://mvnrepository.com/artifact/io.github.microutils/kotlin-logging
-    implementation 'io.github.microutils:kotlin-logging:3.0.5'
+    implementation 'io.github.microutils:kotlin-logging-jvm:3.0.5'
+    implementation 'ch.qos.logback:logback-classic:1.4.7'
 
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
-
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation "io.kotest:kotest-assertions-core-jvm:${kotestVersion}"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:${kotestVersion}"
 }
 
 test {

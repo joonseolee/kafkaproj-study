@@ -1,1 +1,0 @@
-/Users/1004883/Documents/github-repositories/kafkaproj-study/producers/build/classes/kotlin/main/MainKt.class

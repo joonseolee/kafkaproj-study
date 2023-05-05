@@ -53,3 +53,8 @@ kafka-console-producer.sh --topic simple-topic --bootstrap-server kafka:9092
 # 메시지 처음부터 읽기 
 kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic simple-topic --from-beginning
 ```
+
+추가로 사용하고있는 `topic` 는 아래와 같이 미리 선언해둬야한다.  
+```shell
+kafka-topics.sh --bootstrap-server kafka:9092 --create --topic multipart-topic --partitions 3
+```

@@ -1,4 +1,5 @@
 
 rootProject.name = 'kafkaproj-study'
 include 'producers'
+include 'consumers'
 

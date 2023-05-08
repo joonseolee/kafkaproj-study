@@ -10,7 +10,7 @@ import java.util.*
 class PizzaProducer : TestCallback {
 
     override fun execute(message: String) {
-        val topicName = "multipart-topic"
+        val topicName = "pizza-topic"
         val kafkaProducer = KafkaConnector.generateKafkaProducer()
         sendPizzaMessage(kafkaProducer, topicName, -1, 1000, 0, 0, false)
         kafkaProducer.close()

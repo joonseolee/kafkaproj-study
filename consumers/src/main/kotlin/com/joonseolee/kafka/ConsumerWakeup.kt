@@ -1,14 +1,16 @@
 package com.joonseolee.kafka
 
 import mu.KotlinLogging
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import java.time.Duration
-import kotlin.math.log
 
 
 class ConsumerWakeup : TestCallback {
     override fun execute() {
-        val topicName = "basic-topic"
-        val kafkaConsumer = KafkaConnector.generateKafkaConsumer()
+        val topicName = "pizza-topic"
+        val kafkaConsumer = KafkaConnector.generateKafkaConsumer {
+            it.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+        }
         kafkaConsumer.subscribe(listOf(topicName))
 
         val currentThread = Thread.currentThread()
@@ -27,7 +29,8 @@ class ConsumerWakeup : TestCallback {
             while (true) {
                 val consumerRecords = kafkaConsumer.poll(Duration.ofMillis(1000))
                 for (record in consumerRecords) {
-                    logger.info { "record key: ${record.key()}, record value: ${record.value()}, partition: ${record.partition()}" }
+                    logger.info { "record key: ${record.key()}, partition: ${record.partition()}," +
+                            "record offset: ${record.offset()}, record value: ${record.value()}" }
                 }
             }
         }.onFailure { logger.error { "error while polling $it" } }

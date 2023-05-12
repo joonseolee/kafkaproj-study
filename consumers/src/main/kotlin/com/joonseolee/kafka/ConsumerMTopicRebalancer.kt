@@ -2,6 +2,7 @@ package com.joonseolee.kafka
 
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.RoundRobinAssignor
 import java.time.Duration
 
 
@@ -10,7 +11,8 @@ class ConsumerMTopicRebalancer : TestCallback {
         val kafkaConsumer = KafkaConnector.generateKafkaConsumer {
             it.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
             it.setProperty(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, "3")
-            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group-mtopic")
+            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group-assign")
+            it.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, RoundRobinAssignor::class.java.name)
         }
         kafkaConsumer.subscribe(listOf("topic-p3-t1", "topic-p3-t2"))
 

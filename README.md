@@ -58,3 +58,8 @@ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic simple-topic --f
 ```shell
 kafka-topics.sh --bootstrap-server kafka:9092 --create --topic multipart-topic --partitions 3
 ```
+
+## 기타
+
+1. [confluentinc/cp-docker-images](https://github.com/confluentinc/cp-docker-images/wiki/Getting-Started)
+  * 일부 옵션들이 다르지만 해당 이미지를 사용하여 작업할수도있음.

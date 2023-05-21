@@ -3,6 +3,7 @@ package com.joonseolee.kafka
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.clients.consumer.OffsetCommitCallback
 import java.time.Duration
 import kotlin.math.log
 
@@ -30,7 +31,33 @@ class ConsumerCommit : TestCallback {
         })
 
         // pollAutoCommit(kafkaConsumer)
-        pollCommitSync(kafkaConsumer)
+        // pollCommitSync(kafkaConsumer)
+        pollCommitAsync(kafkaConsumer)
+    }
+
+    private fun pollCommitAsync(kafkaConsumer: KafkaConsumer<String, String>) {
+        var loopCount = 0
+        runCatching {
+            while (true) {
+                val consumerRecords = kafkaConsumer.poll(Duration.ofMillis(1000))
+                logger.info { ">>> looCount: ${loopCount++} consumerRecords count: ${consumerRecords.count()}" }
+                for (record in consumerRecords) {
+                    logger.info { "record key: ${record.key()}, partition: ${record.partition()}," +
+                            "record offset: ${record.offset()}, record value: ${record.value()}" }
+                }
+
+                kafkaConsumer.commitAsync { offsets, exception ->
+                    if (exception != null) {
+                        logger.error { "offsets $offsets is not completed, error: $exception" }
+                    }
+                }
+            }
+        }.onFailure { logger.error { "error while polling $it" } }
+            .also {
+                kafkaConsumer.commitSync()
+                logger.info { "get into the also step" }
+                kafkaConsumer.close()
+            }
     }
 
     private fun pollCommitSync(kafkaConsumer: KafkaConsumer<String, String>) {

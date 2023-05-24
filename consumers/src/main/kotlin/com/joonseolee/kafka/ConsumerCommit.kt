@@ -13,7 +13,8 @@ class ConsumerCommit : TestCallback {
         val topicName = "pizza-topic"
         val kafkaConsumer = KafkaConnector.generateKafkaConsumer {
             it.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "60000")
-            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_03")
+//            커밋을 안한다면 groupIdConfig 도 사실상 필요없음
+//            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_03")
             it.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
         }
         kafkaConsumer.subscribe(listOf(topicName))
@@ -33,6 +34,25 @@ class ConsumerCommit : TestCallback {
         // pollAutoCommit(kafkaConsumer)
         // pollCommitSync(kafkaConsumer)
         pollCommitAsync(kafkaConsumer)
+    }
+
+    private fun pollNoCommitAsync(kafkaConsumer: KafkaConsumer<String, String>) {
+        var loopCount = 0
+        runCatching {
+            while (true) {
+                val consumerRecords = kafkaConsumer.poll(Duration.ofMillis(1000))
+                logger.info { ">>> looCount: ${loopCount++} consumerRecords count: ${consumerRecords.count()}" }
+                for (record in consumerRecords) {
+                    logger.info { "record key: ${record.key()}, partition: ${record.partition()}," +
+                            "record offset: ${record.offset()}, record value: ${record.value()}" }
+                }
+            }
+        }.onFailure { logger.error { "error while polling $it" } }
+            .also {
+                kafkaConsumer.commitSync()
+                logger.info { "get into the also step" }
+                kafkaConsumer.close()
+            }
     }
 
     private fun pollCommitAsync(kafkaConsumer: KafkaConsumer<String, String>) {

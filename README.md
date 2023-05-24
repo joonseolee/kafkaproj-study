@@ -59,6 +59,18 @@ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic simple-topic --f
 kafka-topics.sh --bootstrap-server kafka:9092 --create --topic multipart-topic --partitions 3
 ```
 
+## consumer
+
+특정 파티션의 특정 offset 부터 읽고싶다고 할때 아래를 참고하면 된다.  
+```kotlin
+// 0번 파티션 리슨 
+val topicPartition = TopicPartition(topicName, 0)
+kafkaConsumer.assign(listOf(topicPartition))
+
+// offset = 100 에 해당하는곳부터 읽는데 만약 그것보다 적은 데이터가 적재되었을경우 처음부터 읽는다 
+kafkaConsumer.seek(topicPartition, 100L)
+```
+
 ## 기타
 
 1. [confluentinc/cp-docker-images](https://github.com/confluentinc/cp-docker-images/wiki/Getting-Started)

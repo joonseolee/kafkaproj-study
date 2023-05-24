@@ -12,12 +12,13 @@ class ConsumerPartitionAssign : TestCallback {
         val topicName = "pizza-topic"
         val kafkaConsumer = KafkaConnector.generateKafkaConsumer {
             it.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "60000")
-            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_pizza_assign_seek")
+            it.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "group_pizza_assign_seek_01")
             it.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
         }
 
         val topicPartition = TopicPartition(topicName, 0)
         kafkaConsumer.assign(listOf(topicPartition))
+        kafkaConsumer.seek(topicPartition, 100L)
 
         val currentThread = Thread.currentThread()
         Runtime.getRuntime().addShutdownHook(object : Thread() {
